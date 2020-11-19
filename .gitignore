@@ -43,3 +43,6 @@ Thumbs.db
 tmp.html
 /local-samples
 *.mp4
+
+# Will
+debug.log

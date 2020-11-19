@@ -4,11 +4,14 @@ import { LoggerService } from './logger.service';
 describe('CalculatorService', () => {
   // "specification", i.e. "test"
   it('should add two numbers', () => {
-    const calculator = new CalculatorService(new LoggerService());
+    const logger = jasmine.createSpyObj('LoggerService', ['log']);
+
+    const calculator = new CalculatorService(logger);
 
     const result = calculator.add(2, 2);
 
     expect(result).toBe(4, 'Unexpected addition result');
+    expect(logger.log).toHaveBeenCalledTimes(1);
   });
 
   it('should subtract numbers', () => {

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Course } from '../model/course';
 import { map } from 'rxjs/operators';
 import { Lesson } from '../model/lesson';
+import { find } from 'cypress/types/lodash';
 
 @Injectable()
 export class CoursesService {

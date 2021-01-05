@@ -50,6 +50,21 @@ describe('CoursesCardListComponent', () => {
   });
 
   it('should display the first course', () => {
-    pending();
+    component.courses = setupCourses();
+
+    fixture.detectChanges();
+    const course = component.courses[0];
+
+    // first-child is a "pseudo selector" to get first element in list
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes#Tree-structural_pseudo-classes
+    const card = el.query(By.css('.course-card:first-child')),
+      title = el.query(By.css('mat-card-title')),
+      image = el.query(By.css('img'));
+
+    expect(card).toBeTruthy('Could not find course card');
+
+    // Ensure that card is being displayed correctly
+    expect(title.nativeElement.textContent).toBe(course.titles.description, 'Incorrect course card title');
+    expect(image.nativeElement.src).toBe(course.iconUrl, 'Incorrect course card image');
   });
 });

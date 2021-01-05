@@ -33,6 +33,10 @@ describe('HomeComponent', () => {
     (c) => c.category === 'BEGINNER'
   );
 
+  const advancedCourses = setupCourses().filter(
+    (c) => c.category === 'ADVANCED'
+  );
+
   beforeEach(async(() => {
     // define mock service
     const coursesServiceSpy = jasmine.createSpyObj('CoursesService', [
@@ -68,11 +72,24 @@ describe('HomeComponent', () => {
   });
 
   it('should display only advanced courses', () => {
-    pending();
+    // must return observable of courses, not array of courses, hence rxjs "of"
+    coursesService.findAllCourses.and.returnValue(of(advancedCourses));
+
+    fixture.detectChanges();
+
+    const tabs = el.queryAll(By.css('.mat-tab-label'));
+
+    expect(tabs.length).toBe(1, 'Unexpected number of tabs found');
   });
 
   it('should display both tabs', () => {
-    pending();
+    coursesService.findAllCourses.and.returnValue(of(setupCourses()));
+
+    fixture.detectChanges();
+
+    const tabs = el.queryAll(By.css('.mat-tab-label'));
+
+    expect(tabs.length).toBe(2, 'Unexpected number of tabs found');
   });
 
   it('should display advanced courses when tab clicked', () => {

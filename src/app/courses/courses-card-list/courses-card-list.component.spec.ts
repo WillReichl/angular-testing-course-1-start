@@ -11,6 +11,7 @@ import { setupCourses } from '../common/setup-test-data';
 describe('CoursesCardListComponent', () => {
   let component: CoursesCardListComponent; // each test gets a fresh component
   let fixture: ComponentFixture<CoursesCardListComponent>;
+  let el: DebugElement;
 
   // async here is not a JS language feature, specific to Angular testing
   // Basically we wait until all async operations in this block complete before starting each test.
@@ -22,6 +23,7 @@ describe('CoursesCardListComponent', () => {
       .then(() => {
         fixture = TestBed.createComponent(CoursesCardListComponent);
         component = fixture.componentInstance;
+        el = fixture.debugElement;
       });
   }));
 
@@ -31,7 +33,13 @@ describe('CoursesCardListComponent', () => {
   });
 
   it('should display the course list', () => {
-    pending();
+    component.courses = setupCourses();
+
+    // query the DOM to see if courses are displayed
+    const cards = el.queryAll(By.css('.course-card'));
+
+    expect(cards).toBeTruthy('Could not find cards');
+    expect(cards.length).toBe(12, 'Unexpected number of courses'); // test currently fails because of change detection!
   });
 
   it('should display the first course', () => {

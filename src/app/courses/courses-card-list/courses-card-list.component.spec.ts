@@ -35,11 +35,18 @@ describe('CoursesCardListComponent', () => {
   it('should display the course list', () => {
     component.courses = setupCourses();
 
+    // component change detection events must be manually fired!
+    fixture.detectChanges();
+
     // query the DOM to see if courses are displayed
     const cards = el.queryAll(By.css('.course-card'));
 
     expect(cards).toBeTruthy('Could not find cards');
-    expect(cards.length).toBe(12, 'Unexpected number of courses'); // test currently fails because of change detection!
+    expect(cards.length).toBe(12, 'Unexpected number of courses'); // test fails without change detection!
+
+    // Note that this is a purely synchronous test. No "set timeout" or HTTP requests, etc.
+    // To account for those, we would need a construct like we use in beforeEach.
+    // Section 4 covers async testing. This is more straightforward and readable when possible.
   });
 
   it('should display the first course', () => {

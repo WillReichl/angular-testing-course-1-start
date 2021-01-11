@@ -1,4 +1,4 @@
-import { fakeAsync, flush, tick } from '@angular/core/testing';
+import { fakeAsync, flush, flushMicrotasks, tick } from '@angular/core/testing';
 
 fdescribe('Async Testing Examples', () => {
   it('Asynchronous Test example with Jasmine done()', (done: DoneFn) => {
@@ -29,6 +29,37 @@ fdescribe('Async Testing Examples', () => {
     flush();
 
     // Note, this also allows us to move assertions outside of the callback
+    expect(test).toBeTruthy();
+  }));
+
+  it('Asynchronous test example - plain promise', fakeAsync(() => {
+    let test = false;
+
+    // setTimeout(() => {
+    //   console.log('setTimeout() first callback triggered.');
+    // });
+
+    // setTimeout(() => {
+    //   console.log('setTimeout() second callback triggered.');
+    // });
+
+    // Promises always executed before setTimeout.
+    // Promise is considered a "Micro Task". This is a separate queue in the browser. More lightweight.
+    // setTimeout is considered a "Macro Task". Between each of these in queue, screen may be updated.
+    Promise.resolve()
+      .then(() => {
+        console.log('Promise first then() evaluated successfully');
+        return Promise.resolve();
+      })
+      .then(() => {
+        console.log('Promise second then() evaluated successfully');
+        test = true;
+      });
+
+    flushMicrotasks();
+
+    console.log('running test assertions');
+
     expect(test).toBeTruthy();
   }));
 });

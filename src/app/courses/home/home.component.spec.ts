@@ -92,8 +92,7 @@ describe('HomeComponent', () => {
     expect(tabs.length).toBe(2, 'Unexpected number of tabs found');
   });
 
-  // Done callback allows us to notify Jasmine when asynchronous tests complete
-  it('should display advanced courses when tab clicked', fakeAsync(() => {
+  it('should display advanced courses when tab clicked - fakeAsync', fakeAsync(() => {
     coursesService.findAllCourses.and.returnValue(of(setupCourses()));
     // console.log(setupCourses());
 
@@ -123,4 +122,42 @@ describe('HomeComponent', () => {
       'Could not find expected course title'
     );
   }));
+
+  it('should display advanced courses when tab clicked - async', async(() => {
+    coursesService.findAllCourses.and.returnValue(of(setupCourses()));
+    // console.log(setupCourses());
+
+    fixture.detectChanges();
+
+    const tabs = el.queryAll(By.css('.mat-tab-label'));
+
+    // Simulate user click using custom function that makes use of DebugElement
+    click(tabs[1]);
+
+    // Must detect changes again? Nope, test still fails - must fix w/ async testing
+    fixture.detectChanges();
+
+    // Assert when stable (whenStable provided by async zone)
+    fixture.whenStable().then(() => {
+      const cardTitles = el.queryAll(
+        By.css('.mat-tab-body-active .mat-card-title')
+      );
+      console.log(cardTitles);
+
+      expect(cardTitles.length).toBeGreaterThan(
+        0,
+        'Could not find course card titles'
+      );
+      expect(cardTitles[0].nativeElement.textContent).toContain(
+        'Angular Security Course',
+        'Could not find expected course title'
+      );
+    });
+  }));
+
+  /**
+   * So why async vs fakeAsync?
+   * Async allows you to write integration tests, e.g. ACTUAL http calls.
+   * If you were getting external HTML/CSS, for example.
+   */
 });

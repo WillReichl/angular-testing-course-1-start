@@ -93,9 +93,9 @@ describe('HomeComponent', () => {
   });
 
   // Done callback allows us to notify Jasmine when asynchronous tests complete
-  it('should display advanced courses when tab clicked', (done: DoneFn) => {
+  it('should display advanced courses when tab clicked', fakeAsync(() => {
     coursesService.findAllCourses.and.returnValue(of(setupCourses()));
-    console.log(setupCourses());
+    // console.log(setupCourses());
 
     fixture.detectChanges();
 
@@ -107,19 +107,20 @@ describe('HomeComponent', () => {
     // Must detect changes again? Nope, test still fails - must fix w/ async testing
     fixture.detectChanges();
 
-    setTimeout(() => {
-      const cardTitles = el.queryAll(By.css('.mat-tab-body-active .mat-card-title'));
-      console.log(cardTitles);
+    flush();
 
-      expect(cardTitles.length).toBeGreaterThan(
-        0,
-        'Could not find course card titles'
-      );
-      expect(cardTitles[0].nativeElement.textContent).toContain(
-        'Angular Security Course',
-        'Could not find expected course title'
-      );
-      done();
-    }, 500); // 500ms gives animation on click time to complete, so cards are available
-  });
+    const cardTitles = el.queryAll(
+      By.css('.mat-tab-body-active .mat-card-title')
+    );
+    console.log(cardTitles);
+
+    expect(cardTitles.length).toBeGreaterThan(
+      0,
+      'Could not find course card titles'
+    );
+    expect(cardTitles[0].nativeElement.textContent).toContain(
+      'Angular Security Course',
+      'Could not find expected course title'
+    );
+  }));
 });
